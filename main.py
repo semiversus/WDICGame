@@ -1,8 +1,13 @@
 import pygame
+import math
 
 SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 1000
+SCREEN_HEIGHT = 800
 FRAMES_PER_SECOND = 30
+
+
+def time():
+    return pygame.time.get_ticks() / 1000.0
 
 
 class Manager:
@@ -14,9 +19,9 @@ class Manager:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.HWSURFACE)
 
         self.clock = pygame.time.Clock()
-        
+
         self.running = True
-    
+
     def run(self):
         while self.running:
             self.scene.update()
@@ -39,11 +44,11 @@ class Manager:
 class StartScene:
     def __init__(self, game: Manager):
         self.game = game
-    
+
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             self.game.scene = Game(self.game)
-    
+
     def update(self):
         pass
 
@@ -57,8 +62,8 @@ class Game:
     def __init__(self, manager: Manager):
         self.manager = manager
         self.player = Player(self)
-        self.enemies: list[Enemy] = [Enemy(i * 1000) for i in range(5)]
-    
+        self.enemies: list[Enemy] = [Enemy(i + time()) for i in range(5)]
+
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
@@ -70,7 +75,7 @@ class Game:
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_RIGHT, pygame.K_LEFT):
                 self.player.x_speed = 0
-    
+
     def update(self):
         self.player.update()
         for enemy in self.enemies:
@@ -83,15 +88,15 @@ class Game:
 
 
 class Player:
-    WIDTH = 30
-    HEIGHT = 30
+    WIDTH = 50
+    HEIGHT = 50
 
     def __init__(self, game: Game):
         self.game = game
         self.rect = pygame.Rect(500 - self.WIDTH / 2, SCREEN_HEIGHT - 100 - self.HEIGHT / 2, self.WIDTH, self.HEIGHT)
         self.x_speed = 0
         self.missles: list[PlayerMissle] = []
-    
+
     def shot(self):
         missle = PlayerMissle(self.rect.centerx)
         self.missles.append(missle)
@@ -102,66 +107,95 @@ class Player:
 
         for missle in tuple(self.missles):
             missle.update(self.game)
-    
-    def render(self, screen: pygame.Surface):            
+
+    def render(self, screen: pygame.Surface):
         pygame.draw.rect(screen, (0, 255, 0), self.rect)
 
         for missle in tuple(self.missles):
             missle.render(screen)
-        
+
 
 class PlayerMissle:
-    WIDTH = 3
-    HEIGHT = 20
+    WIDTH = 10
+    HEIGHT = 25
     SPEED = 30
 
     def __init__(self, x: float):
         self.rect = pygame.Rect(x - self.WIDTH / 2, SCREEN_HEIGHT - 100 - self.HEIGHT / 2, self.WIDTH, self.HEIGHT)
-        print(self.rect.centery)
 
     def update(self, game: Game):
         self.rect.centery -= self.SPEED
         if self.rect.centery < 0:
             game.player.missles.remove(self)
-        
+
         for enemy in tuple(game.enemies):
             if self.rect.colliderect(enemy.rect):
                 game.enemies.remove(enemy)
                 game.player.missles.remove(self)
                 break
-    
+
     def render(self, screen: pygame.Surface):
         pygame.draw.rect(screen, (255, 0, 0), self.rect)
 
 class Enemy:
-    WIDTH = 30
-    HEIGHT = 30
+    WIDTH = 50
+    HEIGHT = 50
 
-    def __init__(self, time_offset: int):
+    def __init__(self, start_time: float):
         self.rect = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)
-        self.path = Path()
-        self.start_time = pygame.time.get_ticks() + time_offset
-    
+        self.path = Path(start_time, [(100, 0), (100, 300), (SCREEN_WIDTH - 100, 300), (SCREEN_WIDTH - 100, 300), (SCREEN_WIDTH - 100, 0)], 300)
+        self.start_time = start_time
+        self.visible = False
+
     def update(self):
-        self.rect.center = self.path.get_position(pygame.time.get_ticks() - self.start_time)
+        position = self.path.get_position(time() - self.start_time)
+
+        if position is None:
+            self.visible = False
+        else:
+            self.visible = True
+            self.rect.center = position
 
     def render(self, screen: pygame.Surface):
-        pygame.draw.rect(screen, (0, 0, 255), self.rect)
+        if self.visible:
+            pygame.draw.rect(screen, (0, 0, 255), self.rect)
 
 class Path:
-    def get_position(self, time_elapsed: int) -> tuple[float, float]:
-        if time_elapsed < 0:
-            return (200, -500)
-        elif time_elapsed < 2000:
-            x = 200
-            y = time_elapsed / 2000 * 200
-        elif time_elapsed < 6000:
-            x = 200 + (time_elapsed - 2000) / 4000 * (SCREEN_WIDTH - 400)
-            y = 200
-        else:
-            x = SCREEN_WIDTH - 200
-            y = 200 - (time_elapsed - 6000) / 4000 * 200
+    def __init__(self, start_time: float, points: list[tuple[float, float]], speed: float):
+        self.start_time = start_time
+        self.points = points
+        self.speed = speed
+        self.segment_lengths = []
+        self.cumulative_lengths = [0.0]
 
-        return (x, y)
+        for i in range(len(points) - 1):
+            dx = points[i + 1][0] - points[i][0]
+            dy = points[i + 1][1] - points[i][1]
+            seg_length = math.sqrt(dx**2 + dy**2)
+            self.segment_lengths.append(seg_length)
+            self.cumulative_lengths.append(self.cumulative_lengths[-1] + seg_length)
+
+        self.total_length = self.cumulative_lengths[-1]
+
+    def get_position(self, time: float) -> tuple[float, float]:
+        if time < 0:
+            return None
+
+        distance = self.speed * time
+        if distance >= self.total_length:
+            return None
+
+        # Find the segment
+        for i in range(len(self.segment_lengths)):
+            if distance <= self.cumulative_lengths[i + 1]:
+                dist_into_seg = distance - self.cumulative_lengths[i]
+                fraction = dist_into_seg / self.segment_lengths[i]
+                p1 = self.points[i]
+                p2 = self.points[i + 1]
+                x = p1[0] + fraction * (p2[0] - p1[0])
+                y = p1[1] + fraction * (p2[1] - p1[1])
+                return (x, y)
+
+        return self.points[-1]
 
 Manager().run()

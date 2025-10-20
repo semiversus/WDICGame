@@ -1,3 +1,3 @@
 # Specifications
 
-* Screen: 600px width, 1000px height
+* Screen: 600px width, 800px height
