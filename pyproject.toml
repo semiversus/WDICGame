@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "WDICGame"
+version = "1.0.0"
+dependencies = [
+  "pygame == 2.6.1",
+]
+requires-python = ">=3.8"
+description = "A game written in WDIC at HTL Rankweil"
+readme = "README.md"
+license = "MIT"
+
+[project.urls]
+Repository = "https://github.com/semiversus/WDICGame"
+
+[project.gui-scripts]
+game = "wdic_game:__main__"
