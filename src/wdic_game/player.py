@@ -2,15 +2,15 @@ import pygame
 
 from .consts import SCREEN_WIDTH, SCREEN_HEIGHT
 from .game import Game
+from .utils import get_asset_path
 
 
 class Player:
-    WIDTH = 50
-    HEIGHT = 50
-
     def __init__(self, game: Game):
         self.game = game
-        self.rect = pygame.Rect(500 - self.WIDTH / 2, SCREEN_HEIGHT - 100 - self.HEIGHT / 2, self.WIDTH, self.HEIGHT)
+        self.image = pygame.image.load(get_asset_path("images/player_ship.png")).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(SCREEN_WIDTH / 2 - self.rect.width / 2, SCREEN_HEIGHT - 100 - self.rect.height / 2)
         self.x_speed = 0
         self.missles: list[PlayerMissle] = []
 
@@ -20,13 +20,15 @@ class Player:
 
     def update(self):
         self.rect.x += self.x_speed * 20
-        self.rect.centerx = max(self.WIDTH / 2, min(self.rect.centerx, SCREEN_WIDTH - self.WIDTH / 2))
+
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
 
         for missle in tuple(self.missles):
             missle.update(self.game)
 
     def render(self, screen: pygame.Surface):
-        pygame.draw.rect(screen, (0, 255, 0), self.rect)
+        screen.blit(self.image, self.rect)
 
         for missle in tuple(self.missles):
             missle.render(screen)
