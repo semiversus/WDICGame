@@ -35,13 +35,13 @@ class SceneManager:
 
 
 class StartScene:
-    def __init__(self, game: SceneManager):
-        self.game = game
+    def __init__(self, manager: SceneManager):
+        self.manager = manager
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             from .game import Game
-            self.game.scene = Game(self.game)
+            self.manager.scene = Game(self.manager)
 
     def update(self):
         pass
