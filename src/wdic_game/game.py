@@ -9,6 +9,7 @@ class Game:
         from .enemy import Enemy
 
         self.manager = manager
+        self.score = 0
         self.player = Player(self)
         self.enemies: list[Enemy] = [Enemy(i + time()) for i in range(5)]
 
@@ -19,7 +20,7 @@ class Game:
             elif event.key == pygame.K_LEFT:
                 self.player.x_speed = -1
             elif event.key == pygame.K_SPACE:
-                self.player.shot()
+                self.player.shoot()
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_RIGHT, pygame.K_LEFT):
                 self.player.x_speed = 0

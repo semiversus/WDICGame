@@ -6,6 +6,7 @@ from .consts import SCREEN_WIDTH, SCREEN_HEIGHT, FRAMES_PER_SECOND
 class SceneManager:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         pygame.display.set_caption("WDIC Game")
 
         self.scene = StartScene(self)
