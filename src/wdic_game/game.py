@@ -1,8 +1,8 @@
 import pygame
 
 from .scene_manager import SceneManager
-from .utils import time
-from .enemy import load_enemy_wave
+from .enemy_wave import load_enemy_wave
+
 
 class Game:
     def __init__(self, manager: SceneManager):
