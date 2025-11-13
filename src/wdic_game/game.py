@@ -29,7 +29,7 @@ class Game:
                 self.player.x_speed = 0
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            self.player.shot()
+            self.player.shoot()
             
     def update(self):
         self.player.update(self)
