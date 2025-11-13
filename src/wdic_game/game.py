@@ -4,6 +4,7 @@ from .scene_manager import SceneManager
 from .enemy_wave import load_enemy_wave
 
 
+
 class Game:
     def __init__(self, manager: SceneManager):
         from .player import Player
@@ -16,16 +17,19 @@ class Game:
         self.enemies: list[Enemy] = load_enemy_wave(self.enemy_wave_index)
 
     def handle_event(self, event: pygame.event.Event):
+        keys = pygame.key.get_pressed()
+        right = keys[pygame.K_RIGHT]
+        left = keys[pygame.K_LEFT]
+        
+        if (right and left) or (not right and not left):
+            self.player.x_speed = 0
+        elif right:
+            self.player.x_speed = 1
+        elif left:
+            self.player.x_speed = -1
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                self.player.x_speed = 1
-            elif event.key == pygame.K_LEFT:
-                self.player.x_speed = -1
-            elif event.key == pygame.K_SPACE:
-                self.player.shoot()
-        elif event.type == pygame.KEYUP:
-            if event.key in (pygame.K_RIGHT, pygame.K_LEFT):
-                self.player.x_speed = 0
+            if event.key == pygame.K_SPACE:
+                self.player.shot()
 
     def update(self):
         self.player.update(self)
