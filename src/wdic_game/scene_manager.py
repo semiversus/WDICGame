@@ -50,4 +50,5 @@ class StartScene:
     def render(self, screen: pygame.Surface):
         font = pygame.font.Font(None, 74)
         text = font.render("WDIC Game", True, (255, 255, 255))
-        screen.blit(text, (50, 450))
+        text.get_rect()
+        screen.blit(text, (70, 470))
