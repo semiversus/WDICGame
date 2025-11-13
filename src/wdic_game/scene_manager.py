@@ -50,4 +50,7 @@ class StartScene:
     def render(self, screen: pygame.Surface):
         font = pygame.font.Font(None, 74)
         text = font.render("WDIC Game", True, (255, 255, 255))
-        screen.blit(text, (50, 450))
+        screen.blit(text, ((SCREEN_WIDTH - text.get_width())/2, 450))
+        font = pygame.font.Font(None, 40)
+        text_desc = font.render("Press Space to start", True, (255, 255, 255))
+        screen.blit(text_desc, ((SCREEN_WIDTH - text_desc.get_width())/2, 505))
