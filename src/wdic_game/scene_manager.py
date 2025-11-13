@@ -27,9 +27,14 @@ class SceneManager:
                     self.running = False
                 else:
                     self.scene.handle_event(event)
+                    font = pygame.font.Font(None, 20)
+                    text = font.render("Score", True, (255, 255, 255))
+                    self.screen.blit(text, (SCREEN_WIDTH*3/4, 50))
 
             self.screen.fill((0, 0, 0))
             self.scene.render(self.screen)
+
+
             pygame.display.update()
 
             self.clock.tick(FRAMES_PER_SECOND)
