@@ -2,6 +2,7 @@ import pygame
 
 from .scene_manager import SceneManager
 from .utils import time
+from .enemy import load_enemy_wave
 
 class Game:
     def __init__(self, manager: SceneManager):
@@ -10,8 +11,9 @@ class Game:
 
         self.manager = manager
         self.score = 0
-        self.player = Player(self)
-        self.enemies: list[Enemy] = [Enemy(i + time()) for i in range(5)]
+        self.player = Player()
+        self.enemy_wave_index = 0
+        self.enemies: list[Enemy] = load_enemy_wave(self.enemy_wave_index)
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
@@ -26,9 +28,13 @@ class Game:
                 self.player.x_speed = 0
 
     def update(self):
-        self.player.update()
+        self.player.update(self)
         for enemy in self.enemies:
-            enemy.update()
+            enemy.update(self)
+        
+        if not self.enemies:
+            self.enemy_wave_index += 1
+            self.enemies = load_enemy_wave(self.enemy_wave_index)
 
     def render(self, screen: pygame.Surface):
         self.player.render(screen)

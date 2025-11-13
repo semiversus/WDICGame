@@ -6,8 +6,7 @@ from .utils import get_asset_path
 
 
 class Player:
-    def __init__(self, game: Game):
-        self.game = game
+    def __init__(self):
         self.image = pygame.image.load(get_asset_path("images/player_ship.png")).convert_alpha()
         self.sound_shoot = pygame.mixer.Sound(get_asset_path("sounds/player_shoot.wav"))
         self.rect = self.image.get_rect()
@@ -20,14 +19,14 @@ class Player:
         self.sound_shoot.play()
         self.missiles.append(missile)
 
-    def update(self):
+    def update(self, game: Game):
         self.rect.x += self.x_speed * 20
 
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
 
         for missile in tuple(self.missiles):
-            missile.update(self.game)
+            missile.update(game)
 
     def render(self, screen: pygame.Surface):
         screen.blit(self.image, self.rect)
@@ -47,6 +46,7 @@ class PlayerMissile:
         self.rect.centery -= self.SPEED
         if self.rect.centery < 0:
             game.player.missiles.remove(self)
+            return
 
         for enemy in tuple(game.enemies):
             if self.rect.colliderect(enemy.rect):
@@ -55,4 +55,4 @@ class PlayerMissile:
                 break
 
     def render(self, screen: pygame.Surface):
-        screen.fill((0, 0, 255), self.rect)
+        pygame.draw.rect(screen, (0, 0, 255), self.rect)

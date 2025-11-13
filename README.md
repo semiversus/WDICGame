@@ -46,6 +46,20 @@ Das Objekt `Game` enthält einen Attribut für den Punktestand (`score`)
 
 Der Punktestand soll rechts oben angezeigt werden.
 
+## Kollision mit dem Gegner
+* In der dritten Welle kommen die Gegner bis ans untere Ende des Bildschirms und können dadurch mit dem Schiff kollidieren
+* Bei einer Kollision soll ein "Game Over" Bildschirm angezeigt werden
+
+## Weitere Ideen
+* Hinzufügen von zusätzlichen Angriffswellen
+* Textanzeige, wenn eine neue Angriffs-Welle startet
+* Hinzufügen von gegnerischen Schiffen, die selbst feuern können
+* Hinzufügen von "Leben"
+* Hinzufügen von neuen "Raketentypen" (z.B. drei Raketen gleichzeitig)
+* Hintergrundbild, welches während des Fluges von oben nach unten durchscrollt
+* Dem Spieler die Möglichkeit geben, das Raumschiff auch nach oben/unten zu steuern
+* ...
+
 # Credits
 
 * Bilder und Töne wurden verwendet von

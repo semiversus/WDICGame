@@ -1,6 +1,9 @@
 
 import math
 
+from .utils import time
+from .consts import SCREEN_WIDTH
+
 
 class Path:
     def __init__(self, start_time: float, points: list[tuple[float, float]], speed: float):
@@ -18,12 +21,12 @@ class Path:
             self.cumulative_lengths.append(self.cumulative_lengths[-1] + seg_length)
 
         self.total_length = self.cumulative_lengths[-1]
-
+    
     def get_position(self, time: float) -> tuple[float, float]:
-        if time < 0:
+        if time < self.start_time:
             return None
 
-        distance = self.speed * time
+        distance = self.speed * (time - self.start_time)
         if distance >= self.total_length:
             return None
 
@@ -39,3 +42,12 @@ class Path:
                 return (x, y)
 
         return self.points[-1]
+    
+    def is_finished(self, time: float) -> bool:
+        distance = self.speed * (time - self.start_time)
+        return distance >= self.total_length
+
+
+def build_dive_path(time_offset: float, depth: int = 300, speed: int = 200, width: int = SCREEN_WIDTH - 200) -> Path:
+    x = SCREEN_WIDTH / 2 - width / 2
+    return Path(time() + time_offset, [(x, -100), (x, depth), (SCREEN_WIDTH - x, depth), (SCREEN_WIDTH - x, depth), (SCREEN_WIDTH - x, -100)], speed)
