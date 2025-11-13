@@ -16,17 +16,21 @@ class Game:
         self.enemies: list[Enemy] = load_enemy_wave(self.enemy_wave_index)
 
     def handle_event(self, event: pygame.event.Event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
+        keys = pygame.key.get_pressed()
+
+        if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+            if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
+                self.player.x_speed = 0  # cancel out
+            elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
                 self.player.x_speed = 1
-            elif event.key == pygame.K_LEFT:
+            elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
                 self.player.x_speed = -1
-            elif event.key == pygame.K_SPACE:
-                self.player.shoot()
-        elif event.type == pygame.KEYUP:
-            if event.key in (pygame.K_RIGHT, pygame.K_LEFT):
+            else:
                 self.player.x_speed = 0
 
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            self.player.shot()
+            
     def update(self):
         self.player.update(self)
         for enemy in self.enemies:
