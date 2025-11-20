@@ -21,7 +21,10 @@ class Player:
 
     def update(self, game: Game):
         self.rect.x += self.x_speed * 20
-
+        
+        if self.rect.left < 0:
+            self.rect.left = 0
+            
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
 
