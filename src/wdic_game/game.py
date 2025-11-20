@@ -1,5 +1,6 @@
 import pygame
 
+from .consts import SCREEN_WIDTH
 from .scene_manager import SceneManager
 from .enemy_wave import load_enemy_wave
 
@@ -37,6 +38,10 @@ class Game:
             self.enemies = load_enemy_wave(self.enemy_wave_index)
 
     def render(self, screen: pygame.Surface):
+        font = pygame.font.Font(None, 20)
+        text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        screen.blit(text, (SCREEN_WIDTH*0.875, 20))
+
         self.player.render(screen)
         for enemy in self.enemies:
             enemy.render(screen)
