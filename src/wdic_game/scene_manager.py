@@ -38,6 +38,9 @@ class SceneManager:
 class StartScene:
     def __init__(self, manager: SceneManager):
         self.manager = manager
+        self.img = pygame.image.load('Galaga_logo.svg.png')
+        self.img = pygame.transform.scale(self.img, (400, 200))
+        self.font = pygame.font.Font(None, 50)
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -47,16 +50,11 @@ class StartScene:
     def update(self):
         pass
 
-    def render(self, screen: pygame.Surface):
-        img = pygame.image.load('Galaga_logo.svg.png')
-        img = pygame.transform.scale(img, (400, 200))
+    def render(self, screen):  
         red = (255, 60, 0)
-        w = 600
-        h = 800
-        screen = pygame.display.set_mode((w, h))
         screen.fill((red))
-        screen.blit(img,(100,100))
-        font = pygame.font.Font(None, 50)
-        text = font.render("Press Space to continue", True, (255, 255, 255))
+        screen.blit(self.img,(100,100))
+        text = self.font.render("Press Space to continue", True, (255, 255, 255))
         screen.blit(text, (100, 450))
-        pygame.display.flip()
+        
+        
