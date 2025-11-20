@@ -52,6 +52,7 @@ class PlayerMissile:
             if self.rect.colliderect(enemy.rect):
                 game.enemies.remove(enemy)
                 game.player.missiles.remove(self)
+                game.score +=1 
                 break
 
     def render(self, screen: pygame.Surface):
