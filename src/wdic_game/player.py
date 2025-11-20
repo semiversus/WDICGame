@@ -32,10 +32,10 @@ class Player:
             missile.update(game)
 
     def render(self, screen: pygame.Surface):
-        screen.blit(self.image, self.rect)
 
         for missile in tuple(self.missiles):
             missile.render(screen)
+        screen.blit(self.image, self.rect)
 
 
 class PlayerMissile:
