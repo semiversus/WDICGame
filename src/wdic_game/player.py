@@ -21,7 +21,10 @@ class Player:
 
     def update(self, game: Game):
         self.rect.x += self.x_speed * 20
-
+        
+        if self.rect.left < 0:
+            self.rect.left = 0
+            
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
 
@@ -29,10 +32,10 @@ class Player:
             missile.update(game)
 
     def render(self, screen: pygame.Surface):
-        screen.blit(self.image, self.rect)
 
         for missile in tuple(self.missiles):
             missile.render(screen)
+        screen.blit(self.image, self.rect)
 
 
 class PlayerMissile:
