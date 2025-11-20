@@ -23,6 +23,8 @@ class Game:
                 self.player.x_speed = -1
             elif event.key == pygame.K_SPACE:
                 self.player.shoot()
+            elif event.key == pygame.K_q:
+                self.player.shoot3()    
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_RIGHT, pygame.K_LEFT):
                 self.player.x_speed = 0

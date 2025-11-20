@@ -15,9 +15,20 @@ class Player:
         self.missiles: list[PlayerMissile] = []
 
     def shoot(self):
-        missile = PlayerMissile(self.rect.centerx)
+        missile = PlayerMissile(self.rect.centerx, 0)
         self.sound_shoot.play()
         self.missiles.append(missile)
+    
+    def shoot3(self):
+        straight_missile = PlayerMissile(self.rect.centerx, 0)
+        left_missile = PlayerMissile(self.rect.centerx, -5)
+        right_missile = PlayerMissile(self.rect.centerx, +5)
+        self.sound_shoot.play()
+        self.missiles.append(straight_missile)
+        self.missiles.append(right_missile)
+        self.missiles.append(left_missile)
+
+
 
     def update(self, game: Game):
         self.rect.x += self.x_speed * 20
@@ -38,12 +49,15 @@ class Player:
 class PlayerMissile:
     SPEED = 20
 
-    def __init__(self, x: float):
+    def __init__(self, x: float, h: float):
+        self.h = h
         self.rect = pygame.Rect(0, 0, 4, 26)
         self.rect = self.rect.move(x - self.rect.width / 2, SCREEN_HEIGHT - 100 - self.rect.height / 2)
 
     def update(self, game: Game):
         self.rect.centery -= self.SPEED
+        self.rect.centerx += self.h
+
         if self.rect.centery < 0:
             game.player.missiles.remove(self)
             return
