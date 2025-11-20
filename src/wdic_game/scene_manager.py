@@ -48,6 +48,15 @@ class StartScene:
         pass
 
     def render(self, screen: pygame.Surface):
-        font = pygame.font.Font(None, 74)
-        text = font.render("WDIC Game", True, (255, 255, 255))
-        screen.blit(text, (50, 450))
+        img = pygame.image.load('Galaga_logo.svg.png')
+        img = pygame.transform.scale(img, (400, 200))
+        red = (255, 60, 0)
+        w = 600
+        h = 800
+        screen = pygame.display.set_mode((w, h))
+        screen.fill((red))
+        screen.blit(img,(100,100))
+        font = pygame.font.Font(None, 50)
+        text = font.render("Press Space to continue", True, (255, 255, 255))
+        screen.blit(text, (100, 450))
+        pygame.display.flip()
