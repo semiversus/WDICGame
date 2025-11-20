@@ -31,12 +31,12 @@ class Game:
         self.player.update(self)
         for enemy in self.enemies:
             enemy.update(self)
-        
+                
         if not self.enemies:
             self.enemy_wave_index += 1
             self.enemies = load_enemy_wave(self.enemy_wave_index)
-
+        
+        
     def render(self, screen: pygame.Surface):
-        self.player.render(screen)
         for enemy in self.enemies:
             enemy.render(screen)

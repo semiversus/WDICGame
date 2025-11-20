@@ -38,6 +38,9 @@ class SceneManager:
 class StartScene:
     def __init__(self, manager: SceneManager):
         self.manager = manager
+        self.img = pygame.image.load('Galaga_logo.svg.png')
+        self.img = pygame.transform.scale(self.img, (400, 200))
+        self.font = pygame.font.Font(None, 50)
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -47,7 +50,11 @@ class StartScene:
     def update(self):
         pass
 
-    def render(self, screen: pygame.Surface):
-        font = pygame.font.Font(None, 74)
-        text = font.render("WDIC Game", True, (255, 255, 255))
-        screen.blit(text, (50, 450))
+    def render(self, screen):  
+        red = (255, 60, 0)
+        screen.fill((red))
+        screen.blit(self.img,(100,100))
+        text = self.font.render("Press Space to continue", True, (255, 255, 255))
+        screen.blit(text, (100, 450))
+        
+        
